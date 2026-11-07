@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>Ember & Bean</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #EEF0EC;
+  --surface: #F9FAF7;
+  --fg: #16201C;
+  --muted: #55625B;
+  --line: #D2D8D0;
+  --accent: #C23B22;
+  --accent-fg: #FFFFFF;
+  --deep: #17251F;
+  --deep-fg: #E9EEE8;
+  --deep-muted: #9DB0A5;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1411; --surface: #151D19; --fg: #E8ECE6; --muted: #9AA79F; --line: #26332C;
+    --accent: #E5583F; --accent-fg: #130A07; --deep: #0A0F0C; --deep-fg: #E9EEE8; --deep-muted: #8FA298;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+}
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.02em; line-height: 1.05; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin-inline: auto; padding-left: 16px; padding-right: 16px; }
+.label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 20px; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand i { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); display: inline-block; }
+nav { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; font-weight: 500; }
+nav a { text-decoration: none; color: var(--muted); padding: 6px 0; }
+nav a:hover { color: var(--fg); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; padding-block: 40px 72px; }
+.hero h1 { font-size: clamp(44px, 7.6vw, 92px); font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { margin-top: 24px; font-size: 18px; color: var(--muted); max-width: 46ch; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.btn { display: inline-block; padding: 14px 24px; border-radius: 999px; font-weight: 600; text-decoration: none; font-size: 16px; border: 2px solid var(--fg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost:hover { background: var(--fg); color: var(--bg); }
+.hero-art { display: grid; gap: 16px; justify-items: center; min-width: 0; }
+.hero-art svg { width: min(100%, 420px); height: auto; }
+.spec { width: min(100%, 420px); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.spec div { display: grid; gap: 2px; }
+.spec b { font-family: var(--font-mono); font-weight: 500; font-size: 18px; font-variant-numeric: tabular-nums; }
+.spec .label { font-size: 10px; }
+.spec-title { grid-column: 1 / -1; display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 4px; }
+.facts { border-block: 1px solid var(--line); }
+.facts .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; }
+.facts div { padding: 22px 20px 22px 0; display: grid; gap: 4px; }
+.facts b { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.facts span { color: var(--muted); font-size: 14px; }
+section { padding-block: 88px 0; }
+.sec-head { display: grid; gap: 12px; margin-bottom: 36px; }
+.sec-head h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; max-width: 18ch; }
+.sec-head p { color: var(--muted); max-width: 56ch; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tab { font: inherit; font-weight: 600; font-size: 15px; padding: 9px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.menu-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.menu-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.menu-list h3 { font-size: 22px; font-weight: 700; }
+.menu-list p { color: var(--muted); font-size: 15px; grid-column: 1; }
+.menu-list .price { font-family: var(--font-mono); font-size: 18px; grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
+.ledger { display: grid; gap: 0; border-top: 2px solid var(--fg); }
+.row { display: grid; grid-template-columns: 1.1fr 1.4fr 1fr; gap: 12px 32px; padding: 26px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.row > * { min-width: 0; }
+.row h3 { font-size: 26px; font-weight: 700; }
+.row .country { margin-top: 6px; }
+.row .notes { color: var(--muted); }
+.row .notes b { color: var(--fg); font-weight: 600; }
+.meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.score { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--accent); }
+.scale { display: grid; gap: 14px; }
+.bar { height: 22px; border-radius: 999px; background: linear-gradient(90deg, #D9A66B 0%, #B9783F 38%, #7A4A26 68%, #2E1A0E 100%); position: relative; }
+.pin { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--bg); background: var(--fg); transform: translate(-50%, -50%); }
+.pin-labels { position: relative; height: 56px; }
+.pin-labels div { position: absolute; transform: translateX(-50%); text-align: center; font-size: 14px; font-weight: 600; line-height: 1.3; }
+.pin-labels small { display: block; font-family: var(--font-mono); font-weight: 400; font-size: 11px; color: var(--muted); }
+.ends { display: flex; justify-content: space-between; }
+.visit { margin-top: 96px; background: var(--deep); color: var(--deep-fg); }
+.visit .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-block: 72px; }
+.visit h2 { font-size: clamp(34px, 5vw, 56px); font-weight: 800; }
+.visit .label { color: var(--deep-muted); }
+.visit p { color: var(--deep-muted); margin-top: 18px; max-width: 40ch; }
+.hours { display: grid; gap: 0; align-self: start; }
+.hours div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.14); font-variant-numeric: tabular-nums; }
+.hours div:first-child { border-top: 1px solid rgba(255,255,255,0.14); }
+.hours span:last-child { font-family: var(--font-mono); font-size: 15px; }
+.addr { margin-top: 28px; font-family: var(--font-mono); font-size: 14px; color: var(--deep-fg); line-height: 1.7; }
+footer { background: var(--deep); color: var(--deep-muted); }
+footer .wrap { padding-block: 22px 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.14); }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 24px 56px; }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .visit .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 56px; }
+  section { padding-block: 64px 0; }
+  .visit { margin-top: 72px; }
+}
+@media (max-width: 480px) {
+  .spec { grid-template-columns: repeat(2, 1fr); }
+  .pin-labels div { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>Ember &amp; Bean</a>
+    <nav aria-label="Main">
+      <a href="#menu">Menu</a>
+      <a href="#origins">Origins</a>
+      <a href="#roast">Roast</a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label">Specialty roastery &amp; espresso bar</p>
+        <h1 style="margin-top:18px">Roasted this week. <em>Poured</em> this minute.</h1>
+        <p class="lede">We roast small batches of single-origin coffee in-house every Tuesday and Friday, and serve it within days. No stale bags, no burnt shortcuts.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#menu">See today's menu</a>
+          <a class="btn ghost" href="#visit">Find the bar</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 400 400" role="img" aria-label="Flat white seen from above">
+          <defs>
+            <radialGradient id="crema" cx="50%" cy="45%" r="55%">
+              <stop offset="0" stop-color="#C98A4B"/>
+              <stop offset="0.7" stop-color="#8A5329"/>
+              <stop offset="1" stop-color="#5A3419"/>
+            </radialGradient>
+          </defs>
+          <circle cx="200" cy="200" r="186" style="fill: var(--surface); stroke: var(--line)" stroke-width="2"/>
+          <circle cx="200" cy="200" r="150" style="fill: var(--bg); stroke: var(--line)" stroke-width="2"/>
+          <circle cx="200" cy="200" r="132" fill="url(#crema)"/>
+          <g fill="#F4E8D5">
+            <path d="M200 112c34 6 52 34 48 62-3 20-18 32-32 36l-16 6-16-6c-14-4-29-16-32-36-4-28 14-56 48-62z"/>
+            <path d="M200 206c26 4 40 24 36 44-3 16-16 26-36 30-20-4-33-14-36-30-4-20 10-40 36-44z"/>
+            <path d="M200 262c14 2 24 12 22 24-2 8-10 14-22 16-12-2-20-8-22-16-2-12 8-22 22-24z"/>
+          </g>
+          <path d="M200 120v170" stroke="#8A5329" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+          <path d="M338 160c26 0 40 14 40 38s-14 38-40 38" style="stroke: var(--line)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <g style="stroke: var(--muted)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5">
+            <path d="M170 60c-10 12 10 20 0 34"/>
+            <path d="M200 52c-10 12 10 20 0 34"/>
+            <path d="M230 60c-10 12 10 20 0 34"/>
+          </g>
+        </svg>
+        <div class="spec" aria-label="Espresso recipe">
+          <div class="spec-title"><span class="label">House espresso recipe</span><span class="label">1 : 2</span></div>
+          <div><b>18 g</b><span class="label">Dose</span></div>
+          <div><b>36 g</b><span class="label">Yield</span></div>
+          <div><b>28 s</b><span class="label">Time</span></div>
+          <div><b>93 °C</b><span class="label">Water</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="wrap">
+      <div><b>Roasted in-house</b><span>Tuesdays and Fridays, 12 kg batches</span></div>
+      <div><b>86+ cupping score</b><span>Every coffee is cupped before it is bought</span></div>
+      <div><b>Paid above Fairtrade</b><span>We pay farms directly and publish the price</span></div>
+      <div><b>Beans to go</b><span>250 g bags, roast date printed on each</span></div>
+    </div>
+  </div>
+
+  <section id="menu">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Today's bar</p>
+        <h2>Drinks made the short way</h2>
+        <p>Short menu, careful execution. Oat and whole milk are the same price.</p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Menu sections">
+        <button class="tab" role="tab" id="t-espresso" aria-selected="true" aria-controls="panel" data-tab="espresso">Espresso &amp; milk</button>
+        <button class="tab" role="tab" id="t-filter" aria-selected="false" aria-controls="panel" data-tab="filter">Filter</button>
+        <button class="tab" role="tab" id="t-cold" aria-selected="false" aria-controls="panel" data-tab="cold">Cold</button>
+      </div>
+      <ul class="menu-list" id="panel" role="tabpanel" aria-labelledby="t-espresso"></ul>
+    </div>
+  </section>
+
+  <section id="origins">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">On the bar this month</p>
+        <h2>Three origins, traced to the farm</h2>
+        <p>Altitude, process and cupping score are printed on every bag, so you know what you are drinking.</p>
+      </div>
+      <div class="ledger">
+        <article class="row">
+          <div>
+            <h3>Guji Hambela</h3>
+            <p class="label country">Ethiopia</p>
+          </div>
+          <p class="notes"><b>Jasmine, peach, bergamot.</b> Bright and tea-like. Best as filter.</p>
+          <dl class="meta">
+            <dt>Altitude</dt><dd>2,100 masl</dd>
+            <dt>Process</dt><dd>Washed</dd>
+            <dt>Roast</dt><dd>Light</dd>
+            <dt>Score</dt><dd class="score">88.5</dd>
+          </dl>
+        </article>
+        <article class="row">
+          <div>
+            <h3>Huila Pitalito</h3>
+            <p class="label country">Colombia</p>
+          </div>
+          <p class="notes"><b>Red apple, caramel, cocoa.</b> Sweet and balanced. Our house espresso.</p>
+          <dl class="meta">
+            <dt>Altitude</dt><dd>1,750 masl</dd>
+            <dt>Process</dt><dd>Washed</dd>
+            <dt>Roast</dt><dd>Medium</dd>
+            <dt>Score</dt><dd class="score">86.0</dd>
+          </dl>
+        </article>
+        <article class="row">
+          <div>
+            <h3>Sul de Minas</h3>
+            <p class="label country">Brazil</p>
+          </div>
+          <p class="notes"><b>Hazelnut, dark chocolate, brown sugar.</b> Full body that holds up in milk.</p>
+          <dl class="meta">
+            <dt>Altitude</dt><dd>1,150 masl</dd>
+            <dt>Process</dt><dd>Natural</dd>
+            <dt>Roast</dt><dd>Medium-dark</dd>
+            <dt>Score</dt><dd class="score">85.5</dd>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="roast">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Roast profile</p>
+        <h2>Where each coffee sits</h2>
+        <p>Lighter roasts keep the fruit and acidity of the origin. Darker roasts bring body and roasted sweetness.</p>
+      </div>
+      <div class="scale">
+        <div class="bar" role="img" aria-label="Roast scale from light to dark">
+          <span class="pin" style="left:20%"></span>
+          <span class="pin" style="left:52%"></span>
+          <span class="pin" style="left:76%"></span>
+        </div>
+        <div class="pin-labels">
+          <div style="left:20%">Guji<small>205 °C drop</small></div>
+          <div style="left:52%">Huila<small>212 °C drop</small></div>
+          <div style="left:76%">Sul de Minas<small>218 °C drop</small></div>
+        </div>
+        <div class="ends"><span class="label">Light</span><span class="label">Dark</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="visit" id="visit">
+    <div class="wrap">
+      <div>
+        <p class="label">Visit</p>
+        <h2 style="margin-top:14px">Come for one cup, stay for the second</h2>
+        <p>Walk-ins welcome. Bring a laptop, a book or a friend. Wi-Fi is free and the beans are always fresh.</p>
+        <div class="addr">
+          Ember &amp; Bean Roastery<br>
+          24 Mill Lane, Old Town<br>
+          Sample address for demonstration
+        </div>
+      </div>
+      <div class="hours" aria-label="Opening hours">
+        <div><span>Monday to Friday</span><span>7:00 – 18:00</span></div>
+        <div><span>Saturday</span><span>8:00 – 19:00</span></div>
+        <div><span>Sunday</span><span>9:00 – 16:00</span></div>
+        <div><span>Roasting days</span><span>Tue &amp; Fri</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Ember &amp; Bean</span>
+    <span>Sample website. Brand and details are fictional.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var data = {
+    espresso: [
+      ["Espresso", "Huila house blend, 18 g in, 36 g out.", "3.20"],
+      ["Cortado", "Double espresso with an equal part of warm milk.", "4.00"],
+      ["Flat white", "Double espresso, thin velvety milk, 160 ml.", "4.50"],
+      ["Mocha", "Espresso, dark chocolate and steamed milk.", "5.00"]
+    ],
+    filter: [
+      ["V60 Guji Hambela", "Ethiopia. 15 g to 250 ml, clean and floral.", "5.50"],
+      ["Batch brew", "Colombia. Refilled all day, free top-up before 10:00.", "3.80"],
+      ["Aeropress Sul de Minas", "Brazil. Rich and sweet, 2 min steep.", "5.00"]
+    ],
+    cold: [
+      ["Cold brew", "Steeped 18 hours, served over ice.", "4.80"],
+      ["Espresso tonic", "Double shot over tonic, orange peel.", "5.20"],
+      ["Iced flat white", "Double espresso, cold milk, large ice.", "5.00"]
+    ]
+  };
+  var list = document.getElementById("panel");
+  var tabs = document.querySelectorAll(".tab");
+  function render(key) {
+    list.innerHTML = "";
+    data[key].forEach(function (r) {
+      var li = document.createElement("li");
+      var h = document.createElement("h3"); h.textContent = r[0];
+      var pr = document.createElement("span"); pr.className = "price"; pr.textContent = "$" + r[2];
+      var p = document.createElement("p"); p.textContent = r[1];
+      li.appendChild(h); li.appendChild(pr); li.appendChild(p);
+      list.appendChild(li);
+    });
+    tabs.forEach(function (t) {
+      var on = t.getAttribute("data-tab") === key;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) list.setAttribute("aria-labelledby", t.id);
+    });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () { render(t.getAttribute("data-tab")); });
+  });
+  render("espresso");
+})();
+</script>
+</body>
+      </html>
